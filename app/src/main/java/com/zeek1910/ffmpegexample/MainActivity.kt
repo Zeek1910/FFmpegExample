@@ -2,7 +2,6 @@ package com.zeek1910.ffmpegexample
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -31,15 +30,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         viewModel.images.onEach { images ->
-            listAdapter.addItems(images)
-            binding.buttonCreateTimeLaps.isEnabled = images.size > 3
+            listAdapter.setItems(images)
+            binding.buttonCreateTimeLaps.isEnabled = images.size > 1
             binding.buttonClear.isEnabled = images.isNotEmpty()
         }.launchIn(lifecycleScope)
 
         binding.recyclerView.adapter = listAdapter
 
         binding.buttonAddImages.setOnClickListener { takeImages.launch("image/*") }
-        binding.buttonClear.setOnClickListener { viewModel.onButtonClearClicked() }
-        binding.buttonCreateTimeLaps.setOnClickListener { }
+        binding.buttonClear.setOnClickListener { viewModel.onClearButtonClicked() }
+        binding.buttonCreateTimeLaps.setOnClickListener { viewModel.onCreateTimelapsButtonClicked() }
     }
 }

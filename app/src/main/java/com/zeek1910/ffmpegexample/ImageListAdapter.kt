@@ -12,15 +12,10 @@ class ImageListAdapter : RecyclerView.Adapter<ImageListAdapter.ImageListViewHold
 
     private val items: MutableSet<Uri> = mutableSetOf()
 
-    fun addItems(items: List<Uri>) {
-        val startIndex = this.items.size
-        this.items.addAll(items)
-        notifyItemRangeInserted(startIndex, items.size)
-    }
-
     @SuppressLint("NotifyDataSetChanged")
-    fun clear(){
+    fun setItems(items: Set<Uri>) {
         this.items.clear()
+        this.items.addAll(items)
         notifyDataSetChanged()
     }
 
