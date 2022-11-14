@@ -22,6 +22,9 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     private val _images: MutableStateFlow<Set<Uri>> = MutableStateFlow(emptySet())
     val images: StateFlow<Set<Uri>> = _images.asStateFlow()
 
+    private val _isProgress: MutableStateFlow<Pair<Boolean, Int>> = MutableStateFlow(false to 0)
+    val isProgress: StateFlow<Pair<Boolean, Int>> = _isProgress.asStateFlow()
+
     fun onImageAdded(images: List<Uri>) = viewModelScope.launch {
         _images.emit(_images.value + images)
     }
@@ -33,10 +36,13 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
             getFileFromUri(getApplication<Application>().applicationContext, it)
         }
         val video = createVideoFile(getApplication<Application>().applicationContext)
-        val params = TimeLapsManager.Params(imageDuration = 3)
+        val params = TimeLapsManager.Params(imageDuration = 3, width = 640, height = 480)
+        _isProgress.emit(true to 0)
         timeLapsManager.createTimeLaps(images, video, params) { progress ->
             Timber.d("progress: $progress")
+            _isProgress.tryEmit(true to progress)
         }
+        _isProgress.emit(false to 100)
     }
 
     private suspend fun getFileFromUri(context: Context, uri: Uri): File {
