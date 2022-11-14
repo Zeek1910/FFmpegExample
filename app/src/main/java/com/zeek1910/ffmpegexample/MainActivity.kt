@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.buttonAddImages.setOnClickListener { takeImages.launch("image/*") }
         binding.buttonClear.setOnClickListener { viewModel.onClearButtonClicked() }
-        binding.buttonCreateTimeLaps.setOnClickListener { viewModel.onCreateTimelapsButtonClicked() }
+        binding.buttonCreateTimeLaps.setOnClickListener { viewModel.onCreateTimeLapsButtonClicked() }
     }
 
     private fun updateProgress(isProgress: Boolean, progress: Int) {

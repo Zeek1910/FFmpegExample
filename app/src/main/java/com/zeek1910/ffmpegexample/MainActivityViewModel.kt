@@ -31,12 +31,12 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
 
     fun onClearButtonClicked() = viewModelScope.launch { _images.emit(emptySet()) }
 
-    fun onCreateTimelapsButtonClicked() = viewModelScope.launch(Dispatchers.IO) {
+    fun onCreateTimeLapsButtonClicked() = viewModelScope.launch(Dispatchers.IO) {
         val images = _images.value.map {
             getFileFromUri(getApplication<Application>().applicationContext, it)
         }
         val video = createVideoFile(getApplication<Application>().applicationContext)
-        val params = TimeLapsManager.Params(imageDuration = 3, width = 640, height = 480)
+        val params = TimeLapsManager.Params(imageDuration = 3, width = 1000, height = 1000)
         _isProgress.emit(true to 0)
         timeLapsManager.createTimeLaps(images, video, params) { progress ->
             Timber.d("progress: $progress")
