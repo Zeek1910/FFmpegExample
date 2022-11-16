@@ -25,16 +25,22 @@ class TimeLapsManager() {
             stringBuilder.append(
                 "[$i:v]scale=${params.width}:${params.height}:force_original_aspect_ratio=increase," +
                         "crop=${params.width}:${params.height}," +
-                        "pad=${params.width}:${params.height}:(ow-iw)/2:(oh-ih)/2," +
+//                        "pad=${params.width}:${params.height}:(ow-iw)/2:(oh-ih)/2," +
                         "setsar=1[v$i];"
             )
         }
-        for (i in inputFiles.indices) {
-            stringBuilder.append("[v$i]")
+        for (i in 0 until inputFiles.size - 1) {
+            stringBuilder.append(
+                "[v${i + 1}]fade=d=1:t=in:alpha=1,setpts=PTS-STARTPTS+${(i + 1) * (params.imageDuration - 1)}/TB[f$i];"
+            )
+        }
+        stringBuilder.append("[v0][f0]overlay[bg1];")
+        for (i in 1 until inputFiles.size - 2) {
+            stringBuilder.append("[bg$i][f$i]overlay[bg${i + 1}];")
         }
         stringBuilder.append(
-            "concat=n=${inputFiles.size}:v=1:a=0," +
-                    "setsar=1[v] -map [v] -pix_fmt yuv420p ${outputFile.absolutePath}"
+            "[bg${inputFiles.size - 2}][f${inputFiles.size - 2}]overlay," +
+                    "format=yuv420p[v] -map [v] ${outputFile.absolutePath}"
         )
         Timber.i("FFmpeg command: $stringBuilder")
         progressListener?.let {

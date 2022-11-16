@@ -38,11 +38,12 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         val video = createVideoFile(getApplication<Application>().applicationContext)
         val params = TimeLapsManager.Params(imageDuration = 3, width = 1000, height = 1000)
         _isProgress.emit(true to 0)
-        timeLapsManager.createTimeLaps(images, video, params) { progress ->
+        val result = timeLapsManager.createTimeLaps(images, video, params) { progress ->
             Timber.d("progress: $progress")
             _isProgress.tryEmit(true to progress)
         }
         _isProgress.emit(false to 100)
+        Timber.d("result = $result")
     }
 
     private suspend fun getFileFromUri(context: Context, uri: Uri): File {
